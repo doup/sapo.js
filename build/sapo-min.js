@@ -1,0 +1,4 @@
+/*
+ * @author doup - asier@illarra.com
+ */
+var SAPO={register:function(b){var a;SAPO.node[b.name+"Proto"]=Object.create(SAPO.node.Proto);a=SAPO.node[b.name+"Proto"];a._name=b.name;a._type=b.type;SAPO.node[b.name]=function(c){return function(e){var d=Object.create(SAPO.node[c+"Proto"]);d._init(e);return d}}(b.name)}};SAPO.node=SAPO.node||{};SAPO.node.Proto={_definition:function(){},_init:function(a){this._definition()},_setType:function(a){this._type=a},getType:function(){return this._type},};SAPO.register({name:"Flat",type:"Color",ports:[{name:"color",type:"Color",value:{r:1,g:1,b:1,a:1}}],compute:function(b,a){return this.getPort("color").getValue(b,a)}});
