@@ -1,0 +1,12 @@
+{
+  "name": "sapo.js",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Live procedural texture generator for education purposes",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "doup",
+  "license": "ISC"
+}

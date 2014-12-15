@@ -1,3 +1,0 @@
-/**
- */
-SAPO.node.Port = {};
