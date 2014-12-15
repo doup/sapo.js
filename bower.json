@@ -1,0 +1,25 @@
+{
+  "name": "sapo.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/illarra/sapo.js",
+  "authors": [
+    "doup <asier@illarra.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "ace-builds": "~1.1.8",
+    "lodash": "~2.4.1",
+    "dat-gui": "~0.5.0",
+    "esprima": "~1.2.2",
+    "catiline": "~2.9.3"
+  }
+}

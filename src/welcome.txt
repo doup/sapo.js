@@ -1,0 +1,13 @@
+//    _____ ___    ____  ____
+//   / ___//   |  / __ \/ __ \
+//   \__ \/ /| | / /_/ / / / /
+//  ___/ / ___ |/ ____/ /_/ /
+// /____/_/  |_/_/    \____/.JS
+//
+// Welcome to sapo.js interactive procedural texture editor!
+//
+// Author: doup – http://doup.illarra.com
+// Repository: https://github.com/doup/sapo.js
+//
+// See available helper functions: https://github.com/doup/sapo.js/blob/master/src/js/helpers.js
+//
