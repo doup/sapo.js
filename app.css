@@ -1,0 +1,32 @@
+html, body {
+  background-color: #555;
+  margin: 0;
+  padding: 0; }
+
+#editor {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 350px;
+  right: 0; }
+
+#preview {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0px;
+  width: 350px; }
+
+#canvas {
+  margin: 25px; }
+
+#presets, #controls {
+  margin: 0px 25px 10px; }
+
+#presets {
+  width: 300px; }
+
+#controls .dg .close-button {
+  display: none; }

@@ -1,1 +1,34 @@
-My Page
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="author" content="Asier Illarramendi"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>sapo.js | doup.illarra.com</title><link rel="stylesheet" href="app.css"></head><body><div id="preview"><canvas id="canvas" width="300" height="300"></canvas><select id="presets"><option value="" selected>Presets…</option><option value="beam.js">beam.js (default)</option><option value="new.js">new.js</option><option value="scales.js">scales.js</option></select><div id="controls"></div></div><pre id="editor">//    _____ ___    ____  ____
+//   / ___//   |  / __ \/ __ \
+//   \__ \/ /| | / /_/ / / / /
+//  ___/ / ___ |/ ____/ /_/ /
+// /____/_/  |_/_/    \____/.JS
+//
+// Welcome to sapo.js interactive procedural texture generator!
+//
+// Author: doup – http://doup.illarra.com
+// Repository: https://github.com/doup/sapo.js
+//
+// See available helper functions: https://github.com/doup/sapo.js/blob/master/src/js/helpers.js
+//
+function render(s, t) {
+    if (s < 0.5) {
+        return [s * 2, 1.0, 0.5, 1.0];
+    } else {
+        return [2 - (s * 2), 1.0, 0.5, 1.0];
+    }
+}
+</pre><script type="text/preset" data-preset-id="beam.js">function render(s, t) {
+    if (s < 0.5) {
+        return [s * 2, 1.0, 0.5, 1.0];
+    } else {
+        return [2 - (s * 2), 1.0, 0.5, 1.0];
+    }
+}
+</script><script type="text/preset" data-preset-id="new.js">function render(s, t, color=[1.0, 0.0, 1.0, 1.0], point=[0.5, 0.5], float=0.01, int=10, bool=true) {
+    return color;
+}
+</script><script type="text/preset" data-preset-id="scales.js">function render(s, t, color=[0.0, 1.0, 1.0, 0.0]) {
+    return color;
+}
+</script><script src="vendors.js"></script><script src="app.js"></script></body></html>
