@@ -26,7 +26,7 @@ gulp.task('html', function () {
             locals: {
                 presets: presets,
                 welcome: fs.readFileSync('src/welcome.txt'),
-                current: 'scales.js'
+                current: 'beam.js'
             }
         }))
         .pipe(gulp.dest('build'))
@@ -39,7 +39,10 @@ gulp.task('sass', ['html'], function () {
 });
 
 gulp.task('build', ['sass'], function () {
-    return gulp.src(['src/js/app.js'])
+    return gulp.src([
+        'src/js/renderer.js',
+        'src/js/app.js'
+    ])
         .pipe(uglify('app.js'))
         .pipe(gulp.dest('build'))
 });
@@ -53,7 +56,6 @@ gulp.task('vendor', function () {
         'bower_components/ace-builds/src-noconflict/ace.js',
         'bower_components/ace-builds/src-noconflict/mode-javascript.js',
         'bower_components/ace-builds/src-noconflict/theme-solarized_light.js',
-        'bower_components/esprima/esprima.js',
     ])
         .pipe(uglify('vendors.js'))
         .pipe(gulp.dest('build'))

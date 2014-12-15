@@ -4,7 +4,7 @@
 //  ___/ / ___ |/ ____/ /_/ /
 // /____/_/  |_/_/    \____/.JS
 //
-// Welcome to sapo.js interactive procedural texture editor!
+// Welcome to sapo.js interactive procedural texture generator!
 //
 // Author: doup – http://doup.illarra.com
 // Repository: https://github.com/doup/sapo.js

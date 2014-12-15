@@ -9,7 +9,7 @@ html(lang="es")
 
     body
         div#preview
-            canvas#canvas(width='256', height='256')
+            canvas#canvas(width='300', height='300')
             select#presets
                 option(value='' selected) Presets…
                 each preset, key in presets
@@ -17,9 +17,9 @@ html(lang="es")
 
             div#controls
         pre#editor.
-            #{welcome}
-            #{presets[current]}
+            !{welcome}
+            !{presets[current]}
         each preset, key in presets
-            script(type='text/preset' data-preset-id=key) #{preset}
+            script(type='text/preset' data-preset-id=key) !{preset}
         script(src="vendors.js")
         script(src="app.js")
