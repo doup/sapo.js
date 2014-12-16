@@ -12,18 +12,16 @@
 // See available helper functions: https://github.com/doup/sapo.js/blob/master/src/js/helpers.js
 //
 function render(s, t) {
-    if (s < 0.5) {
-        return [s * 2, 1.0, 0.5, 1.0];
-    } else {
-        return [2 - (s * 2), 1.0, 0.5, 1.0];
-    }
+    s = s * 2;
+    s = s > 1 ? 2 - s : s;
+
+    return [s * 1.1, 1.0, 0.5, s * 1.1];
 }
 </pre><script type="text/preset" data-preset-id="beam.js">function render(s, t) {
-    if (s < 0.5) {
-        return [s * 2, 1.0, 0.5, 1.0];
-    } else {
-        return [2 - (s * 2), 1.0, 0.5, 1.0];
-    }
+    s = s * 2;
+    s = s > 1 ? 2 - s : s;
+
+    return [s * 1.1, 1.0, 0.5, s * 1.1];
 }
 </script><script type="text/preset" data-preset-id="new.js">function render(s, t, color=[1.0, 0.0, 1.0, 1.0], point=[0.5, 0.5], float=0.01, int=10, bool=true) {
     return color;
