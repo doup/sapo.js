@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="author" content="Asier Illarramendi"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>sapo.js | doup.illarra.com</title><link rel="stylesheet" href="app.css"><link rel="icon" href="favicon.ico" type="image/x-icon"><link rel="shortcut icon" href="favicon.ico" type="image/x-icon"></head><body><div id="preview"><canvas id="canvas" width="300" height="300"></canvas><select id="presets"><option value="" selected>Presets…</option><option value="beam.js">beam.js</option><option value="checker.js">checker.js</option><option value="new.js">new.js</option><option value="parameters.js">parameters.js</option><option value="scales.js">scales.js (default)</option><option value="smoothstep.js">smoothstep.js</option></select><div id="controls"></div></div><pre id="editor">//    _____ ___    ____  ____
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="author" content="Asier Illarramendi"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>sapo.js | doup.illarra.com</title><link rel="stylesheet" href="app.css"><link rel="icon" href="favicon.ico" type="image/x-icon"><link rel="shortcut icon" href="favicon.ico" type="image/x-icon"></head><body><div id="preview"><canvas id="canvas" width="300" height="300"></canvas><select id="presets"><option value="" selected>Presets…</option><option value="beam.js">beam.js</option><option value="checker.js">checker.js</option><option value="circle.js">circle.js</option><option value="gradient.js">gradient.js</option><option value="halves.js">halves.js</option><option value="lerp.js">lerp.js</option><option value="new.js">new.js</option><option value="parameters.js">parameters.js</option><option value="scales.js">scales.js (default)</option><option value="smoothstep.js">smoothstep.js</option></select><div id="controls"></div></div><pre id="editor">//    _____ ___    ____  ____
 //   / ___//   |  / __ \/ __ \
 //   \__ \/ /| | / /_/ / / / /
 //  ___/ / ___ |/ ____/ /_/ /
@@ -7,19 +7,20 @@
 // Welcome to sapo.js interactive procedural texture generator!
 //
 // Author: doup – http://doup.illarra.com
-// Repository: https://github.com/doup/sapo.js
+// Repository: https://github.com/doup/sapo.js (PR your textures!)
 //
 // See available helper functions: https://github.com/doup/sapo.js/blob/master/src/js/helpers.js
 //
 function render(
     s, t,
-    x_repeat=i(4, 1, 8),
-    y_repeat=i(6, 1, 14),
-    shadow=c(0.318, 0.267, 0.157, 1.0),
-    color=c(0.902, 0.882, 0.816, 1.0),
-    highlight=c(0.984, 0.984, 0.992, 1.0),
-    type=i(0, 0, 1)
-) {
+    x_repeat  = i(4, 1, 8),
+    y_repeat  = i(6, 1, 14),
+    shadow    = c(0.318, 0.267, 0.157, 1.0),
+    color     = c(0.902, 0.882, 0.816, 1.0),
+    highlight = c(0.984, 0.984, 0.992, 1.0),
+    type      = i(0, 0, 1)
+)
+{
     var cut, column, row, ss, tt, border, mid;
     var border_start, border_mid, border_end;
     var origin, dist, hl_width, hl_start, hl_end, pos;
@@ -135,7 +136,14 @@ function render(
         return color;
     }
 }
-</pre><script type="text/preset" data-preset-id="beam.js">function render(s, t, color=c(1.0, 1.0, 0.5, 1.0), freq=i(40, 0, 80), amp=f(0.05), beam=f(1.2, 1.0, 2.0)) {
+</pre><script type="text/preset" data-preset-id="beam.js">function render(
+    s, t,
+    color = c(1.0, 1.0, 0.5, 1.0),
+    freq  = i(40, 0, 80),
+    amp   = f(0.05),
+    beam  = f(1.2, 1.0, 2.0)
+)
+{
     // Simetry
     s = s * 2;
     s = s > 1 ? 2 - s : s;
@@ -148,12 +156,13 @@ function render(
 }
 </script><script type="text/preset" data-preset-id="checker.js">function render(
     s, t,
-    color_1=c(1.0, 1.0, 1.0, 1.0),
-    color_2=c(0.1, 0.1, 0.1, 1.0),
-    x_repeat=i(4, 2, 20),
-    y_repeat=i(4, 2, 20),
-    fuzz=f(0.01, 0.01, 0.4)
-) {
+    color_1  = c(1.0, 1.0, 1.0, 1.0),
+    color_2  = c(0.1, 0.1, 0.1, 1.0),
+    x_repeat = i(4, 2, 20),
+    y_repeat = i(4, 2, 20),
+    fuzz     = f(0.01, 0.01, 0.4)
+)
+{
     var column, row, ss, tt, tmp;
     var isInverted = false;
 
@@ -227,34 +236,102 @@ function render(
         }
     }
 }
-</script><script type="text/preset" data-preset-id="new.js">function render(s, t, color=c(1.0, 0.0, 1.0, 1.0), point=p(0.5, 0.5), float=f(0.01), int=i(10), bool=b(true)) {
+</script><script type="text/preset" data-preset-id="circle.js">function render(
+    s, t,
+    bg     = c(0.447, 0.816, 0.973, 1.0),
+    color  = c(0.89, 0.0, 0.263, 1.0),
+    radius = f(0.2),
+    pos    = p(0.5, 0.5),
+    fuzz   = f(0.01, 0.0, 0.1)
+)
+{
+    var dist = distance([s, t], pos);
+
+    if (dist < radius) {
+        return color;
+    } else if (dist >= radius && dist < radius + fuzz) {
+        return mix(color, bg, smoothstep(0.0, 1.0, (dist - radius) / fuzz));
+    } else {
+        return bg;
+    }
+}
+</script><script type="text/preset" data-preset-id="gradient.js">function render(
+    s, t,
+    color_1 = c(0.875, 0.0, 0.514, 1.0),
+    color_2 = c(1.0, 0.765, 0.0, 1.0)
+)
+{
+    return mix(color_1, color_2, s);
+}
+</script><script type="text/preset" data-preset-id="halves.js">function render(
+    s, t,
+    c1 = c(0.875, 0.0, 0.514, 1.0),
+    c2 = c(1.0, 0.765, 0.0, 1.0)
+)
+{
+    if (s > 0.5) {
+        return c1;
+    } else {
+        return c2;
+    }
+}
+</script><script type="text/preset" data-preset-id="lerp.js">function render(
+    s, t,
+    top    = c(0.2, 0.2, 0.2, 1.0),
+    bot    = c(0.6, 1.0, 0.2, 1.0),
+    gutter = f(0.02, 0.0, 0.4)
+)
+{
+    var x = lerp(0.0, 1.0, s);
+
+    if (t > (x + gutter / 2)) {
+        return bot;
+    } else if(t < (x - gutter / 2)) {
+        return top;
+    } else {
+        // Gutter
+        return mix(top, bot, lerp(0.0, 1.0, (t - x + (gutter / 2)) / gutter));
+    }
+}
+</script><script type="text/preset" data-preset-id="new.js">function render(
+    s, t,
+    color = c(1.0, 0.0, 1.0, 1.0),
+    point = p(0.5, 0.5),
+    float = f(0.01),
+    int   = i(10),
+    bool  = b(true)
+)
+{
     return color;
 }
-</script><script type="text/preset" data-preset-id="parameters.js">function render(s, t,
-    color=c(1.0, 0.3, 1.0, 1.0),
-    point=p(0.5, 0.5),
-    float0=f(0.01),
-    float1=f(0.01, 0.1),
-    float2=f(0.01, -0.1, 0.5),
-    int0=i(10),
-    int1=i(10, -10),
-    int2=i(10, -10, 20),
-    bool0=b(true),
-    bool1=b(false),
-    bool2=b(1),
-    bool3=b(0)
-) {
+</script><script type="text/preset" data-preset-id="parameters.js">function render(
+    s, t,
+    color  = c(1.0, 0.3, 1.0, 1.0),
+    point  = p(0.5, 0.5),
+    float0 = f(0.01),
+    float1 = f(0.01, 0.1),
+    float2 = f(0.01, -0.1, 0.5),
+    int0   = i(10),
+    int1   = i(10, -10),
+    int2   = i(10, -10, 20),
+    bool0  = b(true),
+    bool1  = b(false),
+    bool2  = b(1),
+    bool3  = b(0)
+)
+{
     return color;
 }
 </script><script type="text/preset" data-preset-id="scales.js">function render(
     s, t,
-    x_repeat=i(4, 1, 8),
-    y_repeat=i(6, 1, 14),
-    shadow=c(0.318, 0.267, 0.157, 1.0),
-    color=c(0.902, 0.882, 0.816, 1.0),
-    highlight=c(0.984, 0.984, 0.992, 1.0),
-    type=i(0, 0, 1)
-) {
+    x_repeat  = i(4, 1, 8),
+    y_repeat  = i(6, 1, 14),
+    shadow    = c(0.318, 0.267, 0.157, 1.0),
+    color     = c(0.902, 0.882, 0.816, 1.0),
+    highlight = c(0.984, 0.984, 0.992, 1.0),
+    type      = i(0, 0, 1)
+)
+{
     var cut, column, row, ss, tt, border, mid;
     var border_start, border_mid, border_end;
     var origin, dist, hl_width, hl_start, hl_end, pos;
@@ -370,7 +447,13 @@ function render(
         return color;
     }
 }
-</script><script type="text/preset" data-preset-id="smoothstep.js">function render(s, t, top=c(0.2, 0.2, 0.2, 1.0), bot=c(0.6, 1.0, 0.2, 1.0), gutter=f(0.02, 0.0, 0.4)) {
+</script><script type="text/preset" data-preset-id="smoothstep.js">function render(
+    s, t,
+    top    = c(0.2, 0.2, 0.2, 1.0),
+    bot    = c(0.6, 1.0, 0.2, 1.0),
+    gutter = f(0.02, 0.0, 0.4)
+)
+{
     var x = smoothstep(0.0, 1.0, s);
 
     if (t > (x + gutter / 2)) {
