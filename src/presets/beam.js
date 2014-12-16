@@ -1,7 +1,6 @@
 function render(s, t) {
-    if (s < 0.5) {
-        return [s * 2, 1.0, 0.5, 1.0];
-    } else {
-        return [2 - (s * 2), 1.0, 0.5, 1.0];
-    }
+    s = s * 2;
+    s = s > 1 ? 2 - s : s;
+
+    return [s * 1.1, 1.0, 0.5, s * 1.1];
 }
