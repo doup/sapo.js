@@ -89,6 +89,7 @@ $(function () {
         if (confirm('Loading the preset will erase your current session. Continue?')) {
             editor.setValue($('[data-preset-id="'+ this.value +'"]').html());
             editor.clearSelection();
+            editor.moveCursorTo(0, 0);
         }
 
         if (this.value !== '') {
