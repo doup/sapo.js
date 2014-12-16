@@ -2,9 +2,6 @@ function SapoRenderer(canvas) {
     this.ctx    = canvas.getContext('2d');
     this.width  = canvas.width;
     this.height = canvas.width;
-
-    // Paint it black
-    this.ctx.fillRect(0, 0, this.width, this.height);
 }
 
 SapoRenderer.prototype._getWorker = function (shader) {
