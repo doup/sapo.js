@@ -21,6 +21,8 @@ gulp.task('html', function () {
         presets[file] = fs.readFileSync('src/presets/'+ file);
     });
 
+    gulp.src('src/favicon.ico').pipe(gulp.dest('build'));
+
     gulp.src('src/index.jade')
         .pipe(jade({
             locals: {
