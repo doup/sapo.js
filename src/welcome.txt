@@ -7,7 +7,7 @@
 // Welcome to sapo.js interactive procedural texture generator!
 //
 // Author: doup – http://doup.illarra.com
-// Repository: https://github.com/doup/sapo.js
+// Repository: https://github.com/doup/sapo.js (PR your textures!)
 //
 // See available helper functions: https://github.com/doup/sapo.js/blob/master/src/js/helpers.js
 //
