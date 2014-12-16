@@ -14,6 +14,11 @@ $(function () {
     editor.setShowPrintMargin(false);
     editor.setShowFoldWidgets(false);
 
+    // Hashtag
+    if (location.hash) {
+        loadPreset(location.hash.replace('#', ''));
+    }
+
     // Canvas
     var canvas = new SapoRenderer(document.getElementById('canvas'));
 
@@ -82,14 +87,18 @@ $(function () {
         canvas.render(shader);
     }
 
+    function loadPreset(key) {
+        editor.setValue($('[data-preset-id="'+ key +'"]').html());
+        editor.clearSelection();
+        editor.moveCursorTo(0, 0);
+    }
+
     // ------
     // EVENTS
     // ------
     $('#presets').change(function (e) {
         if (confirm('Loading the preset will erase your current session. Continue?')) {
-            editor.setValue($('[data-preset-id="'+ this.value +'"]').html());
-            editor.clearSelection();
-            editor.moveCursorTo(0, 0);
+            loadPreset(this.value);
         }
 
         if (this.value !== '') {
