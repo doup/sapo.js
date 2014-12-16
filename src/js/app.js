@@ -13,6 +13,7 @@ $(function () {
     editor.setFontSize(14);
     editor.setShowPrintMargin(false);
     editor.setShowFoldWidgets(false);
+    editor.setOption("showLineNumbers", false)
 
     // Hashtag
     if (location.hash) {

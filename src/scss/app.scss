@@ -63,3 +63,64 @@ html, body {
         }
     }
 }
+
+.dg.main {
+    color: #d7e4e2;
+
+    .cr {
+        background-color: #37403e;
+    }
+
+    .cr.number {
+        border-left: none;//3px solid #74bbae;
+
+        input[type=text] {
+            color: #d7e4e2;
+
+            &:hover, &:focus {
+                background-color: #2b3230;
+            }
+        }
+    }
+
+    .dg {
+        .cr {
+            margin-left: 10px;
+        }
+    }
+
+    li.title {
+        background-color: #37403e;
+        border-bottom: 1px solid #272d2c;
+    }
+
+    .c .slider-fg {
+        background-color: #74bbae;
+    }
+
+    .c .slider:hover {
+        background-color: #2b3230;
+
+        .slider-fg {
+            background-color: #74bbae;
+        }
+    }
+/*
+    .c .slider:hover {
+        .slider-fg {
+            background-color: #74bbae;
+
+            &hover {
+                background-color: #74bbae;
+            }
+        }
+
+        &hover {
+            background-color: #2b3230;
+        }
+    }*/
+}
+
+.dg li:not(.folder), .dg li.title {
+    border-bottom: 1px solid #272d2c;
+}
