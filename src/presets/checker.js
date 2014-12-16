@@ -79,10 +79,3 @@ function render(
         }
     }
 }
-
-/*
-
-
-
-
- */
