@@ -2,6 +2,9 @@ $(function () {
     // ----
     // INIT
     // ----
+    // Vars
+    var shader;
+
     // Editor
     var editor = ace.edit('editor');
 
@@ -13,54 +16,72 @@ $(function () {
 
     // Canvas
     var canvas = new SapoRenderer(document.getElementById('canvas'));
-/*
-    canvas.render(function (s, t) {
-        return [Math.random(), Math.random(), Math.random(), 1.0];
-        return [s, t, 1.0, 1.0];
-
-        if (s < 0.5) {
-            return [s, t, 1.0, 1.0];
-        } else {
-            return [t, s, 1.0, 1.0];
-        }
-    });
-*/
 
     // Controls
-    params = {
-        color: [1.0, 1.0, 1.0, 1.0],
-        point: [0.5, 0.5],
-        float: 0.3,
-        int: 10,
-        bool: true
-    }
-/*
     var gui = new dat.GUI({ autoPlace: false, width: 300, scrollable: true });
+    var controls = [];
 
     var customContainer = document.getElementById('controls');
     customContainer.appendChild(gui.domElement);
 
-    gui.addColor(params, 'color');
-    //gui.add(params, 'point');
-    gui.add(params, 'float', 0, 1);
-    gui.add(params, 'int', 0, 10);
-    gui.add(params, 'bool');
-*/
     // ---------
     // FUNCTIONS
     // ---------
-    function refresh() {
-        var code = editor.getValue();
-        var params = /render\(([^)]+)\)/.exec(code)[1];
-        console.log(params)
-        console.log(code.replace('function render', 'return function render'));
+    var refreshCtrl = _.debounce(function (v) {
+        canvas.render(shader);
+    }, 200);
 
-        canvas.render(Function(code.replace('function render', 'return function'))());
-        //console.log(esprima.parse(editor.getValue(), { tolerant: true }));
-        //console.log();
-        //var syntax = esprima.parse();
-        //console.log(JSON.stringify(syntax, null, 4));
+    function bindToGUI(shader) {
+        // Remove dat.gui controls
+        controls.forEach(function (control) {
+            gui.remove(control);
+        });
+
+        // Reset
+        controls = [];
+
+        // Bind new controls
+        shader.params.forEach(function (param) {
+            switch (param.type) {
+                case 'bool':
+                    controls.push(gui.add(shader.values, param.key));
+                    break;
+
+                case 'color':
+                    controls.push(gui.addColor(shader.values, param.key));
+                    break;
+
+                case 'float':
+                    controls.push(gui.add(shader.values, param.key, param.min, param.max));
+                    break;
+
+                case 'int':
+                    controls.push(gui.add(shader.values, param.key, param.min, param.max).step(1));
+                    break;
+
+                case 'point':
+                    break;
+            }
+        });
+
+        // Events
+        controls.forEach(function (control) {
+            control.onChange(refreshCtrl);
+        });
     }
+
+    function compile() {
+        // If there are Errors/Warnings abort compilation
+        if (!!editor.getSession().getAnnotations().length) {
+            return;
+        }
+
+        shader = new SapoShader(editor.getValue());
+
+        bindToGUI(shader);
+        canvas.render(shader);
+    }
+
     // ------
     // EVENTS
     // ------
@@ -75,10 +96,5 @@ $(function () {
         }
     });
 
-    editor.on('change', _.debounce(refresh, 250));
-
-    // -----
-    // START
-    // -----
-    refresh();
+    editor.getSession().on('changeAnnotation', _.debounce(compile, 250));
 });

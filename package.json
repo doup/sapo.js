@@ -2,9 +2,8 @@
   "name": "sapo.js",
   "private": true,
   "version": "0.1.0",
-  "description": "Live procedural texture generator for educational purposes",
+  "description": "Interactive procedural texture generator for educational purposes",
   "author": "doup",
-  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/doup/sapo.js.git"

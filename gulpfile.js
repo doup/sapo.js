@@ -28,7 +28,7 @@ gulp.task('html', function () {
             locals: {
                 presets: presets,
                 welcome: fs.readFileSync('src/welcome.txt'),
-                current: 'smoothstep.js'
+                current: 'scales.js'
             }
         }))
         .pipe(gulp.dest('build'))
@@ -46,6 +46,7 @@ gulp.task('build', ['sass'], function () {
 
     return gulp.src([
         'src/js/renderer.js',
+        'src/js/shader.js',
         'src/js/app.js'
     ])
         .pipe(uglify('app.js'))

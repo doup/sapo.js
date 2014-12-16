@@ -11,14 +11,14 @@ SapoRenderer.prototype._getWorker = function (shader) {
 
         'importScripts("helpers.js");',
 
-        'var fragment = '+ shader.toString() + ';',
+        'var fragment = '+ shader.code.toString() + ';',
 
         'for (x = 0; x < tile.tileW; x++) {',
         '    for (y = 0; y < tile.tileH; y++) {',
         '        s = ((tile.tileW * tile.x) + x) / tile.width;',
         '        t = ((tile.tileH * tile.y) + y) / tile.height;',
 
-        '        color = fragment(s, t);',
+        '        color = fragment.apply(undefined, '+ shader.getArgsStr() +');',
 
         '        pos = ((y * tile.tileW) + x) * 4;',
 
@@ -31,7 +31,7 @@ SapoRenderer.prototype._getWorker = function (shader) {
 
         'return tile;',
     ];
-console.log(Function(fn.join('\n')).toString())
+
     return cw({
         render: Function(fn.join('\n'))
     }, 4);
