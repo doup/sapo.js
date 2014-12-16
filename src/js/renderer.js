@@ -9,6 +9,8 @@ SapoRenderer.prototype._getWorker = function (shader) {
         'var x, y, s, t, color, pos;',
         'var tile = arguments[0];',
 
+        'importScripts("helpers.js");',
+
         'var fragment = '+ shader.toString() + ';',
 
         'for (x = 0; x < tile.tileW; x++) {',

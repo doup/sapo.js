@@ -28,7 +28,7 @@ gulp.task('html', function () {
             locals: {
                 presets: presets,
                 welcome: fs.readFileSync('src/welcome.txt'),
-                current: 'beam.js'
+                current: 'smoothstep.js'
             }
         }))
         .pipe(gulp.dest('build'))
@@ -41,6 +41,9 @@ gulp.task('sass', ['html'], function () {
 });
 
 gulp.task('build', ['sass'], function () {
+    // Copy worker helpers
+    gulp.src(['src/js/helpers.js']).pipe(uglify()).pipe(gulp.dest('build'))
+
     return gulp.src([
         'src/js/renderer.js',
         'src/js/app.js'
