@@ -18,6 +18,10 @@ function clamp(x, min, max) {
     return x;
 }
 
+function distance(p1, p2) {
+    return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
+}
+
 function even(x) {
     return x.toFixed() % 2 == 0;
 }

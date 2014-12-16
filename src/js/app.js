@@ -24,9 +24,8 @@ $(function () {
 
     // Controls
     var gui = new dat.GUI({ autoPlace: false, width: 300, scrollable: true });
-    var controls = [];
-
     var customContainer = document.getElementById('controls');
+
     customContainer.appendChild(gui.domElement);
 
     // ---------
@@ -37,13 +36,12 @@ $(function () {
     }, 200);
 
     function bindToGUI(shader) {
-        // Remove dat.gui controls
-        controls.forEach(function (control) {
-            gui.remove(control);
-        });
+        var controls = [];
 
-        // Reset
-        controls = [];
+        // Create new GUI container
+        gui = new dat.GUI({ autoPlace: false, width: 300, scrollable: true });
+        $(customContainer).empty();
+        customContainer.appendChild(gui.domElement);
 
         // Bind new controls
         shader.params.forEach(function (param) {
@@ -65,6 +63,13 @@ $(function () {
                     break;
 
                 case 'point':
+                    var folder = gui.addFolder(param.key);
+
+                    controls.push(folder.add(shader.values[param.key], 's', -1.0, 2.0));
+                    controls.push(folder.add(shader.values[param.key], 't', -1.0, 2.0));
+
+                    folder.open();
+
                     break;
             }
         });

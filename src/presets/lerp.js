@@ -5,7 +5,7 @@ function render(
     gutter = f(0.02, 0.0, 0.4)
 )
 {
-    var x = smoothstep(0.0, 1.0, s);
+    var x = lerp(0.0, 1.0, s);
 
     if (t > (x + gutter / 2)) {
         return bot;
@@ -13,6 +13,6 @@ function render(
         return top;
     } else {
         // Gutter
-        return mix(top, bot, smoothstep(0.0, 1.0, (t - x + (gutter / 2)) / gutter));
+        return mix(top, bot, lerp(0.0, 1.0, (t - x + (gutter / 2)) / gutter));
     }
 }

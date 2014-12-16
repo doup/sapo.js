@@ -1,12 +1,13 @@
 function render(
     s, t,
-    x_repeat=i(4, 1, 8),
-    y_repeat=i(6, 1, 14),
-    shadow=c(0.318, 0.267, 0.157, 1.0),
-    color=c(0.902, 0.882, 0.816, 1.0),
-    highlight=c(0.984, 0.984, 0.992, 1.0),
-    type=i(0, 0, 1)
-) {
+    x_repeat  = i(4, 1, 8),
+    y_repeat  = i(6, 1, 14),
+    shadow    = c(0.318, 0.267, 0.157, 1.0),
+    color     = c(0.902, 0.882, 0.816, 1.0),
+    highlight = c(0.984, 0.984, 0.992, 1.0),
+    type      = i(0, 0, 1)
+)
+{
     var cut, column, row, ss, tt, border, mid;
     var border_start, border_mid, border_end;
     var origin, dist, hl_width, hl_start, hl_end, pos;

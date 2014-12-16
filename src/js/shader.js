@@ -125,10 +125,10 @@ function SapoShader(code) {
 
             case 'p':
                 def.type    = 'point';
-                def.default = [
-                    parseFloat(value[0]),
-                    parseFloat(value[1])
-                ];
+                def.default = {
+                    s: parseFloat(value[0]),
+                    t: parseFloat(value[1])
+                };
 
                 break;
 
@@ -167,6 +167,8 @@ SapoShader.prototype.getArgsStr = function () {
 
             if (type === 'color') {
                 args.push(JSON.stringify(self.values[key].map(function (v) { return v / 255; })));
+            } else if (type === 'point') {
+                args.push(JSON.stringify([self.values[key].s, self.values[key].t]));
             } else {
                 args.push(JSON.stringify(self.values[key]));
             }

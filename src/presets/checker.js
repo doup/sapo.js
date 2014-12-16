@@ -1,11 +1,12 @@
 function render(
     s, t,
-    color_1=c(1.0, 1.0, 1.0, 1.0),
-    color_2=c(0.1, 0.1, 0.1, 1.0),
-    x_repeat=i(4, 2, 20),
-    y_repeat=i(4, 2, 20),
-    fuzz=f(0.01, 0.01, 0.4)
-) {
+    color_1  = c(1.0, 1.0, 1.0, 1.0),
+    color_2  = c(0.1, 0.1, 0.1, 1.0),
+    x_repeat = i(4, 2, 20),
+    y_repeat = i(4, 2, 20),
+    fuzz     = f(0.01, 0.01, 0.4)
+)
+{
     var column, row, ss, tt, tmp;
     var isInverted = false;
 
