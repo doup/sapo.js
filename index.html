@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="author" content="Asier Illarramendi"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>sapo.js | doup.illarra.com</title><link rel="stylesheet" href="app.css"></head><body><div id="preview"><canvas id="canvas" width="300" height="300"></canvas><select id="presets"><option value="" selected>Presets…</option><option value="beam.js">beam.js (default)</option><option value="new.js">new.js</option><option value="scales.js">scales.js</option></select><div id="controls"></div></div><pre id="editor">//    _____ ___    ____  ____
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="author" content="Asier Illarramendi"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>sapo.js | doup.illarra.com</title><link rel="stylesheet" href="app.css"><link rel="icon" href="favicon.ico" type="image/x-icon"><link rel="shortcut icon" href="favicon.ico" type="image/x-icon"></head><body><div id="preview"><canvas id="canvas" width="300" height="300"></canvas><select id="presets"><option value="" selected>Presets…</option><option value="beam.js">beam.js</option><option value="checker.js">checker.js</option><option value="new.js">new.js</option><option value="parameters.js">parameters.js</option><option value="scales.js">scales.js (default)</option><option value="smoothstep.js">smoothstep.js</option></select><div id="controls"></div></div><pre id="editor">//    _____ ___    ____  ____
 //   / ___//   |  / __ \/ __ \
 //   \__ \/ /| | / /_/ / / / /
 //  ___/ / ___ |/ ____/ /_/ /
@@ -11,42 +11,382 @@
 //
 // See available helper functions: https://github.com/doup/sapo.js/blob/master/src/js/helpers.js
 //
-function render(s, t) {
-    var freq  = 40;
-    var amp   = 0.05;
-    var beam  = 1.2;
-    var color = [1.0, 1.0, 0.5, 1.0];
+function render(
+    s, t,
+    x_repeat=i(4, 1, 8),
+    y_repeat=i(6, 1, 14),
+    shadow=c(0.318, 0.267, 0.157, 1.0),
+    color=c(0.902, 0.882, 0.816, 1.0),
+    highlight=c(0.984, 0.984, 0.992, 1.0),
+    type=i(0, 0, 1)
+) {
+    var cut, column, row, ss, tt, border, mid;
+    var border_start, border_mid, border_end;
+    var origin, dist, hl_width, hl_start, hl_end, pos;
 
+    // Let's calculate in wich column and row we are.
+    column = parseInt(s * x_repeat);
+    row    = parseInt(t * y_repeat);
+
+    // New coordinates
+    ss = wrap(s * x_repeat);
+    tt = wrap(t * y_repeat);
+
+    if (odd(row)) {
+        ss = wrap(ss + 0.5);
+    }
+
+    // Fold coordinates
+    //  ____        __
+    // |\  /|      |\ |
+    // |_\/_|  =>  |_\|
+    //
+    ss = (ss < 0.5) ? ss : 0.5 - (ss - 0.5);
+
+    // Calculate cut height for the given ss
+    // Separates the top and bot region of the scale
+    //        ss
+    //       __|_
+    //      |\   |  TOP TRIANGLE
+    //      | \. |_ cut
+    // BOT  |  \ |
+    // TRI. |___\|
+    if (type === 0) {
+        cut = Math.sin(ss * Math.PI);
+    } else if (type == 1) {
+        cut = clamp(ss * 3.0);
+    } else {
+        cut = ss * 2.0;
+    }
+
+    // DRAWING
+    // Width of the scale border
+    border = 0.08;
+    border = border + (border * (1 - cut)) * 0.5;  // modulate width
+
+    // Mid position (%) when border color is darkest
+    // ROTATED visualization:
+    //
+    //          mid
+    //           .
+    //        .   .
+    //     .       .
+    //     ######### <- border
+    //     ^       ^
+    //     Start   End
+    //  ----------------> tt
+    mid = 0.6;
+
+    // Border position
+    border_start = cut - border;
+    border_mid   = border_start + (mid * border);
+    border_end   = cut;
+
+    // Change origin based on triangle (top/bot)
+    if (tt < border_mid) {
+        origin = [0.5, -1.0];
+    } else {
+        origin = [0.0, 0.0];
+    }
+
+    // Calculate distance to scale origin
+    // Multiply horizontal (x2.5) axis to exagerate roundness
+    dist = Math.sqrt(Math.pow((ss - origin[0]) * 2.5, 2) + Math.pow(tt - origin[1], 2));
+
+    // Calculate color
+    color = mix(highlight, color, smoothstep(0.0, 1.0, (dist * 1.25) - 0.75));  // Highlight
+    color = mix(shadow, color, smoothstep(0.0, 1.0, (tt - origin[1]) * 2.7));   // Origin shadow
+
+    // Scale shadow
+    cut   = (Math.sin((ss + origin[0]) * Math.PI) * 1.2) - 0.85;
+    color = mix(shadow, color, smoothstep(0.0, 1.0, tt - origin[1] - cut));
+
+    // Border Highlight
+    hl_width = 0.15;
+    hl_start = border_start - hl_width;
+    hl_end   = hl_start + hl_width;
+
+    if (tt > hl_start && tt <= hl_end) {
+        pos = (tt - hl_start) / hl_width;
+        color = mix(color, highlight, (
+            smoothstep(0.0, 1.0, ss * 2) *       // Horizontal control
+            smoothstep(0.0, 1.0, pos * 2) *      // Start slope _/'
+            smoothstep(0.0, 1.0, 2 - pos * 2) *  // End slope '\_
+            0.3                                  // Reduce intensity
+        ));
+    }
+
+    // Draw border
+    if (tt > border_start && tt <= border_end) {
+        // Map from border_start = 0.0 to border_end = 1.0
+        //    |
+        //    |  border_start -------
+        // tt |
+        //    |  border_end   -------
+        //    v
+        pos = (tt - border_start) / border;
+
+        return mix(color, shadow, (
+            smoothstep(0.0, 1.0, clamp(pos / mid)) *
+            smoothstep(1.0, 0.0, clamp((pos - mid) / (1 - mid))) *
+            0.5
+        ));
+    } else {
+        return color;
+    }
+}
+</pre><script type="text/preset" data-preset-id="beam.js">function render(s, t, color=c(1.0, 1.0, 0.5, 1.0), freq=i(40, 0, 80), amp=f(0.05), beam=f(1.2, 1.0, 2.0)) {
     // Simetry
     s = s * 2;
     s = s > 1 ? 2 - s : s;
     s = s - (amp / 2);
 
     // Distort
-    s = s + Math.sin(t * Math.PI * freq * 2) * (amp / 2);
+    s = s + Math.sin(t * (Math.PI * 2) * freq) * (amp / 2);
 
     return [color[0] * s * beam, color[1], color[2], color[3] * s * beam];
 }
-</pre><script type="text/preset" data-preset-id="beam.js">function render(s, t) {
-    var freq  = 40;
-    var amp   = 0.05;
-    var beam  = 1.2;
-    var color = [1.0, 1.0, 0.5, 1.0];
+</script><script type="text/preset" data-preset-id="checker.js">function render(
+    s, t,
+    color_1=c(1.0, 1.0, 1.0, 1.0),
+    color_2=c(0.1, 0.1, 0.1, 1.0),
+    x_repeat=i(4, 2, 20),
+    y_repeat=i(4, 2, 20),
+    fuzz=f(0.01, 0.01, 0.4)
+) {
+    var column, row, ss, tt, tmp;
+    var isInverted = false;
 
-    // Simetry
-    s = s * 2;
-    s = s > 1 ? 2 - s : s;
-    s = s - (amp / 2);
+    // Let's calculate in wich column and row we are.
+    column = parseInt(s * x_repeat);
+    row    = parseInt(t * y_repeat);
 
-    // Distort
-    s = s + Math.sin(t * Math.PI * freq * 2) * (amp / 2);
+    // Scale the fuzz using the smallest repeat, and
+    // set it to the half, as we share the fuzz between
+    // two tiles.
+    fuzz = (fuzz / (1 / (x_repeat > y_repeat ? y_repeat : x_repeat))) / 2.0;
 
-    return [color[0] * s * beam, color[1], color[2], color[3] * s * beam];
+    // When the column and row are not even, or are not odd,
+    // we invert the colors. So, color_1 = color_2 and
+    // color_2 = color_1
+    if ((!(even(column) && even(row))) && (!(odd(column) && odd(row)))) {
+        isInverted = true;
+    }
+
+    // Tile the coordinates so that we have ss and tt,
+    // which range between 0 and 1.0.
+    ss = wrap(s * x_repeat);
+    tt = wrap(t * y_repeat);
+
+    //  ____          __
+    // |\  /|        |\ |
+    // | \/ |        | \|         __
+    // | /\ |   =>   | /|   =>   | /|
+    // |/__\|        |/_|        |/_|
+    //
+    // We "fold" the coordinates to simplify the edge
+    // detection. ss and tt would range in [ 0, 0.5 )
+    //
+    ss = ss < 0.5 ? ss : 0.5 - (ss - 0.5);
+    tt = tt < 0.5 ? tt : 0.5 - (tt - 0.5);
+
+    // If we are in the upper triangle we do a simetry.
+    // So that we even simplify more the operation.
+    if (tt > ss) {
+        tmp = ss;
+        ss  = tt;
+        tt  = tmp;
+    }
+
+    // If we are in the fuzz range we do a gradient between
+    // the two colors. Otherwise we just return a plain color.
+    //
+    // ^tt   /|
+    // |    / |
+    // |   /__| <- Fuzz range
+    // |  /___|
+    // |--------->ss
+    // 0,0
+    //
+    if (tt < fuzz) {
+        if (isInverted) {
+            tmp     = color_1;
+            color_1 = color_2;
+            color_2 = tmp;
+        }
+
+        fuzz = ((tt / fuzz) / 2.0) + 0.5;
+        fuzz = smoothstep(0.0, 1.0, fuzz);
+
+        return mix(color_1, color_2, 1.0 - fuzz);
+    } else {
+        if (isInverted) {
+            return color_2;
+        } else {
+            return color_1;
+        }
+    }
 }
-</script><script type="text/preset" data-preset-id="new.js">function render(s, t, color=[1.0, 0.0, 1.0, 1.0], point=[0.5, 0.5], float=0.01, int=10, bool=true) {
+
+/*
+
+
+
+
+ */
+</script><script type="text/preset" data-preset-id="new.js">function render(s, t, color=c(1.0, 0.0, 1.0, 1.0), point=p(0.5, 0.5), float=f(0.01), int=i(10), bool=b(true)) {
     return color;
 }
-</script><script type="text/preset" data-preset-id="scales.js">function render(s, t, color=[0.0, 1.0, 1.0, 0.0]) {
+</script><script type="text/preset" data-preset-id="parameters.js">function render(s, t,
+    color=c(1.0, 0.3, 1.0, 1.0),
+    point=p(0.5, 0.5),
+    float0=f(0.01),
+    float1=f(0.01, 0.1),
+    float2=f(0.01, -0.1, 0.5),
+    int0=i(10),
+    int1=i(10, -10),
+    int2=i(10, -10, 20),
+    bool0=b(true),
+    bool1=b(false),
+    bool2=b(1),
+    bool3=b(0)
+) {
     return color;
+}
+</script><script type="text/preset" data-preset-id="scales.js">function render(
+    s, t,
+    x_repeat=i(4, 1, 8),
+    y_repeat=i(6, 1, 14),
+    shadow=c(0.318, 0.267, 0.157, 1.0),
+    color=c(0.902, 0.882, 0.816, 1.0),
+    highlight=c(0.984, 0.984, 0.992, 1.0),
+    type=i(0, 0, 1)
+) {
+    var cut, column, row, ss, tt, border, mid;
+    var border_start, border_mid, border_end;
+    var origin, dist, hl_width, hl_start, hl_end, pos;
+
+    // Let's calculate in wich column and row we are.
+    column = parseInt(s * x_repeat);
+    row    = parseInt(t * y_repeat);
+
+    // New coordinates
+    ss = wrap(s * x_repeat);
+    tt = wrap(t * y_repeat);
+
+    if (odd(row)) {
+        ss = wrap(ss + 0.5);
+    }
+
+    // Fold coordinates
+    //  ____        __
+    // |\  /|      |\ |
+    // |_\/_|  =>  |_\|
+    //
+    ss = (ss < 0.5) ? ss : 0.5 - (ss - 0.5);
+
+    // Calculate cut height for the given ss
+    // Separates the top and bot region of the scale
+    //        ss
+    //       __|_
+    //      |\   |  TOP TRIANGLE
+    //      | \. |_ cut
+    // BOT  |  \ |
+    // TRI. |___\|
+    if (type === 0) {
+        cut = Math.sin(ss * Math.PI);
+    } else if (type == 1) {
+        cut = clamp(ss * 3.0);
+    } else {
+        cut = ss * 2.0;
+    }
+
+    // DRAWING
+    // Width of the scale border
+    border = 0.08;
+    border = border + (border * (1 - cut)) * 0.5;  // modulate width
+
+    // Mid position (%) when border color is darkest
+    // ROTATED visualization:
+    //
+    //          mid
+    //           .
+    //        .   .
+    //     .       .
+    //     ######### <- border
+    //     ^       ^
+    //     Start   End
+    //  ----------------> tt
+    mid = 0.6;
+
+    // Border position
+    border_start = cut - border;
+    border_mid   = border_start + (mid * border);
+    border_end   = cut;
+
+    // Change origin based on triangle (top/bot)
+    if (tt < border_mid) {
+        origin = [0.5, -1.0];
+    } else {
+        origin = [0.0, 0.0];
+    }
+
+    // Calculate distance to scale origin
+    // Multiply horizontal (x2.5) axis to exagerate roundness
+    dist = Math.sqrt(Math.pow((ss - origin[0]) * 2.5, 2) + Math.pow(tt - origin[1], 2));
+
+    // Calculate color
+    color = mix(highlight, color, smoothstep(0.0, 1.0, (dist * 1.25) - 0.75));  // Highlight
+    color = mix(shadow, color, smoothstep(0.0, 1.0, (tt - origin[1]) * 2.7));   // Origin shadow
+
+    // Scale shadow
+    cut   = (Math.sin((ss + origin[0]) * Math.PI) * 1.2) - 0.85;
+    color = mix(shadow, color, smoothstep(0.0, 1.0, tt - origin[1] - cut));
+
+    // Border Highlight
+    hl_width = 0.15;
+    hl_start = border_start - hl_width;
+    hl_end   = hl_start + hl_width;
+
+    if (tt > hl_start && tt <= hl_end) {
+        pos = (tt - hl_start) / hl_width;
+        color = mix(color, highlight, (
+            smoothstep(0.0, 1.0, ss * 2) *       // Horizontal control
+            smoothstep(0.0, 1.0, pos * 2) *      // Start slope _/'
+            smoothstep(0.0, 1.0, 2 - pos * 2) *  // End slope '\_
+            0.3                                  // Reduce intensity
+        ));
+    }
+
+    // Draw border
+    if (tt > border_start && tt <= border_end) {
+        // Map from border_start = 0.0 to border_end = 1.0
+        //    |
+        //    |  border_start -------
+        // tt |
+        //    |  border_end   -------
+        //    v
+        pos = (tt - border_start) / border;
+
+        return mix(color, shadow, (
+            smoothstep(0.0, 1.0, clamp(pos / mid)) *
+            smoothstep(1.0, 0.0, clamp((pos - mid) / (1 - mid))) *
+            0.5
+        ));
+    } else {
+        return color;
+    }
+}
+</script><script type="text/preset" data-preset-id="smoothstep.js">function render(s, t, top=c(0.2, 0.2, 0.2, 1.0), bot=c(0.6, 1.0, 0.2, 1.0), gutter=f(0.02, 0.0, 0.4)) {
+    var x = smoothstep(0.0, 1.0, s);
+
+    if (t > (x + gutter / 2)) {
+        return bot;
+    } else if(t < (x - gutter / 2)) {
+        return top;
+    } else {
+        // Gutter
+        return mix(top, bot, smoothstep(0.0, 1.0, (t - x + (gutter / 2)) / gutter));
+    }
 }
 </script><script src="vendors.js"></script><script src="app.js"></script></body></html>
