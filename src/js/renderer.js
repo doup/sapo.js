@@ -18,7 +18,7 @@ SapoRenderer.prototype._getWorker = function (shader) {
         '        s = ((tile.tileW * tile.x) + x) / tile.width;',
         '        t = ((tile.tileH * tile.y) + y) / tile.height;',
 
-        '        color = fragment.apply(undefined, '+ shader.getArgsStr() +');',
+        '        color = fragment.apply(null, '+ shader.getArgsStr() +');',
 
         '        pos = ((y * tile.tileW) + x) * 4;',
 

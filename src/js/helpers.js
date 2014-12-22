@@ -41,6 +41,21 @@ function odd(x) {
     return !even(x);
 }
 
+// [
+//   radius: [0.5, 0.5] to pixel distance
+//   angle:  0 to (2 * Math.PI) range.
+// ]
+//
+function polar(s, t) {
+    var ss = s - 0.5;
+    var tt = t - 0.5;
+
+    return [
+        distance([ss, tt], [0, 0]),
+        Math.atan2(tt, ss)
+    ];
+}
+
 function smoothstep(a, b, x) {
     x = clamp((x - a) / (b - a));
 
