@@ -10,9 +10,18 @@ var jade        = require('gulp-jade');
 var sass        = require('gulp-sass');
 var uglify      = require('gulp-uglifyjs');
 
-gulp.task('clean', function (done) {
-    del(['build'], done);
-});
+gulp.task('clean', (function () {
+    var cleaned = false;
+
+    return function (cb) {
+        if (cleaned) {
+            cb();
+        } else {
+            cleaned = true;
+            del(['build/**/*'], cb);
+        }
+    }
+})());
 
 gulp.task('html', function () {
     var presets = {};
@@ -21,7 +30,10 @@ gulp.task('html', function () {
         presets[file] = fs.readFileSync('src/presets/'+ file);
     });
 
-    gulp.src('src/favicon.ico').pipe(gulp.dest('build'));
+    gulp.src([
+        'src/chrome-exp.png',
+        'src/favicon.ico'
+    ]).pipe(gulp.dest('build'));
 
     gulp.src('src/index.jade')
         .pipe(jade({
