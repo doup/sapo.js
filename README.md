@@ -1,4 +1,4 @@
-#Init
+# Init
 
 Make sure you have [Bower](http://bower.io) and [Gulp](http://gulpjs.com) installed:
 
@@ -10,7 +10,7 @@ Install dependencies:
     $ npm install
     $ bower install
 
-#Develop
+# Develop
 
 Build static files and run dev server:
 
